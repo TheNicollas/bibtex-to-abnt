@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Conversor BibTeX para ABNT & APA - Rápido e Gratuito</title>
-  <meta name="description" content="Converta suas referências BibTeX para o padrão ABNT ou APA gratuitamente. Processamento 100% no seu navegador com privacidade total.">
+  <title>Conversor BibTeX para ABNT e APA Grátis | Gerador de Citações</title>
+  <meta name="description" content="Convertor online e gratuito de BibTeX para ABNT NBR 6023 e APA 7th. Formate suas referências acadêmicas instantaneamente sem instalar nada.">
+  <meta name="keywords" content="bibtex para abnt, converter bibtex apa, gerador de citacao abnt, bibtex online converter, referencia latex abnt">
   <style>
     :root {
       --bg: #0f172a;
@@ -22,6 +23,7 @@
       padding: 20px;
       display: flex;
       justify-content: center;
+      line-height: 1.6;
     }
     .container {
       max-width: 800px;
@@ -98,6 +100,37 @@
       margin-top: 10px;
     }
     .copy-btn:hover { color: var(--text); border-color: var(--text); }
+
+    /* Estilos de SEO e Conteúdo Extra */
+    .seo-section {
+      margin-top: 40px;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+    .seo-section h2 { color: var(--accent); font-size: 1.3rem; margin-top: 25px; }
+    .seo-section p, .seo-section li { color: var(--muted); font-size: 0.95rem; }
+    
+    /* Box de Afiliado/Parceiro */
+    .affiliate-box {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 15px;
+      margin: 25px 0;
+      text-align: center;
+    }
+    .affiliate-box h3 { margin: 0 0 8px 0; color: #fff; font-size: 1.1rem; }
+    .affiliate-box p { margin: 0 0 12px 0; font-size: 0.9rem; color: var(--muted); }
+    .affiliate-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
@@ -133,6 +166,32 @@
     <div id="output" class="output-box">Sua citação formatada aparecerá aqui...</div>
     <button class="copy-btn" onclick="copyOutput()">Copiar Citação</button>
   </div>
+
+  <!-- Bloco Estratégico de Monetação/Afiliado -->
+  <div class="affiliate-box">
+    <h3>Escrevendo um artigo ou tese acadêmica?</h3>
+    <p>Garanta que o seu texto esteja livre de erros gramaticais e de digitação antes de submeter à banca.</p>
+    <a href="#" class="affiliate-btn" target="_blank" rel="noopener">Conhecer Corretor Acadêmico Recomendado</a>
+  </div>
+
+  <!-- Seção de SEO para Indexação no Google -->
+  <section class="seo-section">
+    <h2>Como converter BibTeX para ABNT online?</h2>
+    <p>Para formatar suas referências do Overleaf ou LaTeX no padrão ABNT (NBR 6023) ou APA, siga os passos simples:</p>
+    <ol>
+      <li>Copie o bloco de código <code>@article</code> ou <code>@book</code> do seu arquivo <code>.bib</code>.</li>
+      <li>Cole o texto na caixa de entrada acima.</li>
+      <li>Selecione o estilo desejado (ABNT ou APA 7ª edição).</li>
+      <li>Clique em <strong>Converter Agora</strong> e copie a referência formatada diretamente para o seu documento Word ou relatório.</li>
+    </ol>
+
+    <h2>Por que usar esta ferramenta de citação?</h2>
+    <ul>
+      <li><strong>100% Privado e Seguro:</strong> O processamento é feito inteiramente no seu navegador. Seus dados acadêmicos nunca são enviados para servidores externos.</li>
+      <li><strong>Rápido e Gratuito:</strong> Sem necessidade de cadastro, assinaturas ou limites de uso.</li>
+      <li><strong>Formatado para o Padrão Brasileiro:</strong> Converte nomes de autores para caixa alta, formata títulos e volumes conforme as diretrizes da ABNT.</li>
+    </ul>
+  </section>
 </div>
 
 <script>
@@ -156,7 +215,6 @@ function parseBibTeX(text) {
 function formatABNT(data) {
   if (!data.author || !data.title) return "Erro: O BibTeX precisa ter pelo menos 'author' e 'title'.";
   
-  // Formatando autor: EINSTEIN, Albert
   let authorStr = data.author;
   const names = data.author.split(" ");
   if (names.length > 1) {
@@ -212,7 +270,6 @@ function convertBibtex() {
     formatted = formatAPA(parsed);
   }
 
-  // Renderiza simples substituição de markdown básico para negrito/itálico em HTML
   outputDiv.innerHTML = formatted
     .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
     .replace(/\*(.*?)\*/g, '<i>$1</i>');
