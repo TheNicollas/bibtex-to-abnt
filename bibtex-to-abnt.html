@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conversor BibTeX para ABNT & APA - Rápido e Gratuito</title>
+  <meta name="description" content="Converta suas referências BibTeX para o padrão ABNT ou APA gratuitamente. Processamento 100% no seu navegador com privacidade total.">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --accent: #38bdf8;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: #334155;
+    }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      max-width: 800px;
+      width: 100%;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    h1 { margin-bottom: 0.5rem; font-size: 1.8rem; color: var(--accent); }
+    p.subtitle { color: var(--muted); font-size: 0.95rem; margin-top: 0; }
+    
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    label { display: block; font-weight: bold; margin-bottom: 8px; }
+    textarea {
+      width: 100%;
+      height: 160px;
+      background: #090d16;
+      border: 1px solid var(--border);
+      color: #38bdf8;
+      font-family: monospace;
+      padding: 12px;
+      border-radius: 6px;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin: 15px 0;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    select, button {
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    select {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    button.btn-primary {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      transition: opacity 0.2s;
+    }
+    button.btn-primary:hover { opacity: 0.9; }
+    
+    .output-box {
+      background: #090d16;
+      border: 1px solid var(--border);
+      padding: 15px;
+      border-radius: 6px;
+      min-height: 80px;
+      font-family: serif;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+    .copy-btn {
+      background: transparent;
+      border: 1px solid var(--muted);
+      color: var(--muted);
+      margin-top: 10px;
+    }
+    .copy-btn:hover { color: var(--text); border-color: var(--text); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Conversor BibTeX &rarr; Citação ABNT / APA</h1>
+    <p class="subtitle">Cole seu código BibTeX abaixo para gerar a citação formatada instantaneamente.</p>
+  </header>
+
+  <div class="card">
+    <label for="bibtexInput">Entrada BibTeX:</label>
+    <textarea id="bibtexInput" placeholder="@article{einstein1905,
+  author = {Albert Einstein},
+  title = {Zur Elektrodynamik bewegter Körper},
+  journal = {Annalen der Physik},
+  year = {1905},
+  volume = {17}
+}"></textarea>
+
+    <div class="controls">
+      <label for="styleSelect">Estilo:</label>
+      <select id="styleSelect">
+        <option value="ABNT">ABNT (Brasil)</option>
+        <option value="APA">APA 7th</option>
+      </select>
+      <button class="btn-primary" onclick="convertBibtex()">Converter Agora</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>Resultado Formatado:</label>
+    <div id="output" class="output-box">Sua citação formatada aparecerá aqui...</div>
+    <button class="copy-btn" onclick="copyOutput()">Copiar Citação</button>
+  </div>
+</div>
+
+<script>
+function parseBibTeX(text) {
+  const result = {};
+  const authorMatch = text.match(/author\s*=\s*[\"{](.*?)[\"}]/i);
+  const titleMatch = text.match(/title\s*=\s*[\"{](.*?)[\"}]/i);
+  const journalMatch = text.match(/journal\s*=\s*[\"{](.*?)[\"}]/i);
+  const yearMatch = text.match(/year\s*=\s*[\"{]?(\d{4})[\"}]?/i);
+  const volumeMatch = text.match(/volume\s*=\s*[\"{]?(.*?)[\"}]?/i);
+
+  if (authorMatch) result.author = authorMatch[1];
+  if (titleMatch) result.title = titleMatch[1];
+  if (journalMatch) result.journal = journalMatch[1];
+  if (yearMatch) result.year = yearMatch[1];
+  if (volumeMatch) result.volume = volumeMatch[1];
+
+  return result;
+}
+
+function formatABNT(data) {
+  if (!data.author || !data.title) return "Erro: O BibTeX precisa ter pelo menos 'author' e 'title'.";
+  
+  // Formatando autor: EINSTEIN, Albert
+  let authorStr = data.author;
+  const names = data.author.split(" ");
+  if (names.length > 1) {
+    const lastName = names.pop().toUpperCase();
+    authorStr = `${lastName}, ${names.join(" ")}`;
+  } else {
+    authorStr = authorStr.toUpperCase();
+  }
+
+  let res = `${authorStr}. **${data.title}**. `;
+  if (data.journal) res += `*${data.journal}*, `;
+  if (data.volume) res += `v. ${data.volume}, `;
+  if (data.year) res += `${data.year}.`;
+
+  return res;
+}
+
+function formatAPA(data) {
+  if (!data.author || !data.title) return "Erro: O BibTeX precisa ter pelo menos 'author' e 'title'.";
+  
+  let authorStr = data.author;
+  const names = data.author.split(" ");
+  if (names.length > 1) {
+    const lastName = names.pop();
+    const initials = names.map(n => n[0] + ".").join(" ");
+    authorStr = `${lastName}, ${initials}`;
+  }
+
+  let res = `${authorStr} (${data.year || 'n.d.'}). ${data.title}. `;
+  if (data.journal) res += `*${data.journal}*`;
+  if (data.volume) res += `, ${data.volume}`;
+  res += `.`;
+
+  return res;
+}
+
+function convertBibtex() {
+  const input = document.getElementById('bibtexInput').value;
+  const style = document.getElementById('styleSelect').value;
+  const outputDiv = document.getElementById('output');
+
+  if (!input.trim()) {
+    outputDiv.innerText = "Por favor, cole um código BibTeX válido acima.";
+    return;
+  }
+
+  const parsed = parseBibTeX(input);
+  let formatted = "";
+
+  if (style === "ABNT") {
+    formatted = formatABNT(parsed);
+  } else {
+    formatted = formatAPA(parsed);
+  }
+
+  // Renderiza simples substituição de markdown básico para negrito/itálico em HTML
+  outputDiv.innerHTML = formatted
+    .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+    .replace(/\*(.*?)\*/g, '<i>$1</i>');
+}
+
+function copyOutput() {
+  const outputText = document.getElementById('output').innerText;
+  navigator.clipboard.writeText(outputText);
+  alert("Citação copiada para a área de transferência!");
+}
+</script>
+
+</body>
+</html>
